@@ -10,29 +10,29 @@
 	desc "Reads current version changelog from file CHANGELOG_CURRENT.md and puts it to CHANGELOG.md as new section for current version"
 	desc "Also return current changelog contents"
 	private_lane :copy_changelog do |options|
-		version_suffix = options[:version_suffix]
-		version_suffix = "" if !version_suffix #if suffix was not passed - use empty string
+		app_suffix = options[:app_suffix]
+		app_suffix = "" if !app_suffix #if suffix was not passed - use empty string
 		
 		#parsing app version from version properties file, code is executed from fastlane folder, so we need to add .. before path
 		versionProps = load_properties("../app/version.properties")
-		lane_context[SharedValues::BUILD_NUMBER] = versionProps["VERSION_CODE#{version_suffix}"]
+		lane_context[SharedValues::BUILD_NUMBER] = versionProps["VERSION_CODE#{app_suffix}"]
 		#running update changelog
-		update_changelog(version: "#{versionProps["VERSION_NAME#{version_suffix}"]} (#{versionProps["VERSION_CODE#{version_suffix}"]})")				
+		update_changelog(version: "#{versionProps["VERSION_NAME#{app_suffix}"]} (#{versionProps["VERSION_CODE#{app_suffix}"]})")				
 		lane_context[SharedValues::UPDATE_CHANGELOG_CURRENT]
 	end
 	
 	desc "Commits changelog changes to git, use this after 'copy_changelog' lane"
 	private_lane :commit_changelog do |options|
-		version_suffix = options[:version_suffix]
-		version_suffix = "" if !version_suffix #if suffix was not passed - use empty string
+		app_suffix = options[:app_suffix]
+		app_suffix = "" if !app_suffix #if suffix was not passed - use empty string
 		
 # 		TODO extract changelog commit to another action with nice output 
 # 		ensure we have not staged anything except changelog
 		sh("git reset HEAD")
 # 		adding changed files, we need to add uplevel because this code is executed inside 'fastlane' folder
-		sh("git add ../CHANGELOG#{version_suffix}.md")
-		sh("git add ../CHANGELOG_CURRENT#{version_suffix}.md")
-		sh("git commit -m \"Changelog update#{version_suffix}\"")
+		sh("git add ../CHANGELOG#{app_suffix}.md")
+		sh("git add ../CHANGELOG_CURRENT#{app_suffix}.md")
+		sh("git commit -m \"Changelog update#{app_suffix}\"")
 	end 
 
 	# TODO use gradle to get current app version, this is a temporary solution
