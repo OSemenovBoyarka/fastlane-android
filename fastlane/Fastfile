@@ -17,7 +17,11 @@
 		versionProps = load_properties("../app/version.properties")
 		lane_context[SharedValues::BUILD_NUMBER] = versionProps["VERSION_CODE#{app_suffix}"]
 		#running update changelog
-		update_changelog(version: "#{versionProps["VERSION_NAME#{app_suffix}"]} (#{versionProps["VERSION_CODE#{app_suffix}"]})")				
+		update_changelog(
+			version: "#{versionProps["VERSION_NAME#{app_suffix}"]} (#{versionProps["VERSION_CODE#{app_suffix}"]})",
+			log_filename: "CHANGELOG#{app_suffix}.md",
+			current_log_filename: "CHANGELOG_CURRENT#{app_suffix}.md"
+			)				
 		lane_context[SharedValues::UPDATE_CHANGELOG_CURRENT]
 	end
 	
